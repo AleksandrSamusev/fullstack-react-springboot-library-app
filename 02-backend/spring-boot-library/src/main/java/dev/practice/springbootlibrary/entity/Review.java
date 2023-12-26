@@ -1,6 +1,6 @@
 package dev.practice.springbootlibrary.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
