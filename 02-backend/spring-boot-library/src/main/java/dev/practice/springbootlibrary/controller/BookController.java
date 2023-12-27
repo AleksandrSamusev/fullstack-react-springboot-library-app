@@ -51,4 +51,11 @@ public class BookController {
         String userEmail = ExtractJWT.payloadJWTExtraction(token);
         bookService.returnBook(userEmail, bookId);
     }
+
+    @PutMapping("/secure/renew/loan")
+    public void renewLoan(@RequestHeader(value = "Authorization") String token,
+                          @RequestParam Long bookId) throws Exception {
+        String userEmail = ExtractJWT.payloadJWTExtraction(token);
+        bookService.renewLoan(userEmail, bookId);
+    }
 }
