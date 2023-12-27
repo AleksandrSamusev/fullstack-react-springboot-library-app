@@ -2,8 +2,10 @@ package dev.practice.springbootlibrary.service;
 
 import dev.practice.springbootlibrary.dao.BookRepository;
 import dev.practice.springbootlibrary.dao.CheckoutRepository;
+import dev.practice.springbootlibrary.dao.HistoryRepository;
 import dev.practice.springbootlibrary.entity.Book;
 import dev.practice.springbootlibrary.entity.Checkout;
+import dev.practice.springbootlibrary.entity.History;
 import dev.practice.springbootlibrary.responseModels.ShelfCurrentLoansResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class BookService {
     private final BookRepository bookRepository;
     private final CheckoutRepository checkoutRepository;
+    private final HistoryRepository historyRepository;
 
     public Book checkoutBook(String userEmail, Long bookId) throws Exception {
         Optional<Book> book = bookRepository.findById(bookId);
@@ -93,6 +96,19 @@ public class BookService {
         book.get().setCopiesAvailable(book.get().getCopiesAvailable() + 1);
         bookRepository.save(book.get());
         checkoutRepository.deleteById(validateCheckout.getId());
+
+        History history = new History(
+                userEmail,
+                validateCheckout.getCheckoutDate(),
+                LocalDate.now().toString(),
+                book.get().getTitle(),
+                book.get().getAuthor(),
+                book.get().getDescription(),
+                book.get().getImg()
+        );
+
+        historyRepository.save(history);
+
     }
 
     public void renewLoan(String userEmail, Long bookId) throws Exception {
@@ -101,14 +117,16 @@ public class BookService {
         if (validateCheckout == null) {
             throw new Exception("Book doesn't exist or not checked out by User");
         }
-        SimpleDateFormat sdFormat= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        Date d1 =sdFormat.parse(validateCheckout.getReturnDate());
-        Date d2 =sdFormat.parse(LocalDate.now().toString());
+        Date d1 = sdFormat.parse(validateCheckout.getReturnDate());
+        Date d2 = sdFormat.parse(LocalDate.now().toString());
 
-        if(d1.compareTo(d2) > 0 || d1.compareTo(d2) == 0) {
+        if (d1.compareTo(d2) > 0 || d1.compareTo(d2) == 0) {
             validateCheckout.setReturnDate(LocalDate.now().plusDays(7).toString());
             checkoutRepository.save(validateCheckout);
         }
     }
+
+
 }
