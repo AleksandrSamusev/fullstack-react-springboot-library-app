@@ -12,7 +12,7 @@ public class Message {
         this.title = title;
         this.question = question;
     }
-    public Message() {  }
+    public Message() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
