@@ -6,7 +6,7 @@ import dev.practice.springbootlibrary.utils.ExtractJWT;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("hhtp://localhost:3000")
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/admin")
 @AllArgsConstructor
